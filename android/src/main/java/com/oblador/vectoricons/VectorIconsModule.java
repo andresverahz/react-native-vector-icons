@@ -39,6 +39,18 @@ public class VectorIconsModule extends ReactContextBaseJavaModule {
     super(reactContext);
   }
 
+  private void drawCenter(Canvas canvas, Paint paint, String text) {
+    Rect r = new Rect();
+    canvas.getClipBounds(r);
+    int cHeight = r.height();
+    int cWidth = r.width();
+    paint.setTextAlign(Paint.Align.LEFT);
+    paint.getTextBounds(text, 0, text.length(), r);
+    float x = cWidth / 2f - r.width() / 2f - r.left;
+    float y = cHeight / 2f + r.height() / 2f - r.bottom;
+    canvas.drawText(text, x, y, paint);
+  }
+
   @ReactMethod
   public void getImageForFont(String fontFamily, String glyph, Integer fontSize, Integer color, Callback callback) {
     Context context = getReactApplicationContext();
@@ -72,7 +84,7 @@ public class VectorIconsModule extends ReactContextBaseJavaModule {
 
       Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
       Canvas canvas = new Canvas(bitmap);
-      canvas.drawText(glyph, offsetX, offsetY, paint);
+      this.drawCenter(canvas, paint, glyph);
 
       try {
         fos = new FileOutputStream(cacheFile);
